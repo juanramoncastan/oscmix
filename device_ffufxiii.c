@@ -106,6 +106,8 @@ static enum control eq_dyn_reg_to_ctl(int const reg) {
     }
 }
 
+#define ROOM_EQ_BASE 0x3427
+
 #define MIX_REGION_SIZE (LEN(inputs) * 2 * 64)  // Inputs, playbacks 64 output slots
 
 static enum control
@@ -130,9 +132,9 @@ regtoctl(int reg, struct param *p)
             case 0x07: return INPUT_MSPROC;
             case 0x08: return INPUT_PHASE;
             case 0x09: return INPUT_GAIN;
-            case 0x0A: inputs[idx].flags & INPUT_HAS_48V ? INPUT_48V : INPUT_REFLEVEL;
-            case 0x0B: INPUT_AUTOSET;
-            case 0x0C: INPUT_HIZ;
+            case 0x0A: return (inputs[idx].flags & INPUT_HAS_48V) ? INPUT_48V : INPUT_REFLEVEL;
+            case 0x0B: return INPUT_HIZ;
+            case 0x0C: return INPUT_AUTOSET;
             default: return eq_dyn_reg_to_ctl(reg - 0x0D);
         }
     } else if (reg < (LEN(inputs) + LEN(outputs)) * N_CHAN_REGS) {
@@ -212,12 +214,13 @@ regtoctl(int reg, struct param *p)
             // case 0x307D: HARDWARE_STANDALONEMIDI; // ? next to this, and there's another one below?
             case 0x3200: return HARDWARE_DSPVERLOAD;
             case 0x3201: return HARDWARE_DSPAVAIL;
-			// TODO: Verfiy/Recheck needed for this
-			case 0x3203: return REFRESH; 	// Indicator if Refresh is done
+            case 0x3202: return HARDWARE_DSPSTATUS;
+            case 0x3203: return HARDWARE_ARCDELTA;
 
+            case 0x33FD: return REFRESH;
         }
-        if (reg >= 0x30A0) {
-            p->out = (reg - 0x30A0) / 0x20;
+        if (reg >= ROOM_EQ_BASE) {
+            p->out = (reg - ROOM_EQ_BASE) / 0x20;
             if (p->out > LEN(outputs))
                 return -1;
             switch (reg - (p->out * 0x20)) {
@@ -267,7 +270,6 @@ regtoctl(int reg, struct param *p)
     //  - DYNAMICS_METER
     //  - REFRESH
     //  - DUREC_*
-
 	return -1;
 }
 
@@ -313,7 +315,7 @@ static int eqctltoreg(const struct param * const p, int const reg) {
 static int roomeqreg(int const idx, int const reg) {
   if (idx < 0 || idx >= LEN(outputs))
       return -1;
-  return idx * N_ROOMEQ_REGS + reg;
+  return ROOM_EQ_BASE + idx * N_ROOMEQ_REGS + reg;
 }
 
 static int ctltoreg(enum control ctl, const struct param *p)
@@ -331,9 +333,9 @@ static int ctltoreg(enum control ctl, const struct param *p)
         case INPUT_GAIN:        return inputctltoreg(p->in, 0x09);
         case INPUT_REFLEVEL:    return inputctltoregflag(p->in, 0x0A, INPUT_HAS_REFLEVEL);
         case INPUT_48V:         return inputctltoregflag(p->in, 0x0A, INPUT_HAS_48V);
-        case INPUT_AUTOSET:     return inputctltoregflag(p->in, 0x0B, INPUT_HAS_AUTOSET);
-        case INPUT_HIZ:         return inputctltoregflag(p->in, 0x0C, INPUT_HAS_HIZ);
-        
+        case INPUT_AUTOSET:     return inputctltoregflag(p->in, 0x0C, INPUT_HAS_AUTOSET);
+        case INPUT_HIZ:         return inputctltoregflag(p->in, 0x0B, INPUT_HAS_HIZ);
+
         case OUTPUT_VOLUME:     return outputctltoreg(p->out, 0x00);
         case OUTPUT_PAN:        return outputctltoreg(p->out, 0x01);
         case OUTPUT_MUTE:       return outputctltoreg(p->out, 0x02);
@@ -441,10 +443,10 @@ static int ctltoreg(enum control ctl, const struct param *p)
 
         case HARDWARE_DSPVERLOAD:return 0x3200;
         case HARDWARE_DSPAVAIL:  return 0x3201;
+        case HARDWARE_DSPSTATUS: return 0x3202;
+        case HARDWARE_ARCDELTA:  return 0x3203;
 
-		case REFRESH:            return 0x3E03;
-
-
+        case REFRESH:            return 0x3E03;
     }
 	return -1;
 }
