@@ -1298,9 +1298,15 @@ static const struct node roottree[] = {
 		{0},
 	}},
 	{"hardware", .tree=(const struct node[]){
+		{"aesinput", HARDWARE_AESINPUT , .set=setenum, .new=newenum, .names=(const char *const[]){
+			"XLR", "Optical 2",
+		}, .nameslen=2},
 		{"opticalout", HARDWARE_OPTICALOUT, .set=setenum, .new=newenum, .names=(const char *const[]){
 			"ADAT", "SPDIF",
 		}, .nameslen=2},
+		{"opticalout2", HARDWARE_OPTICALOUT2, .set=setenum, .new=newenum, .names=(const char *const[]){
+			"ADAT", "SPDIF", "AES",
+		}, .nameslen=3},
 		{"spdifout", HARDWARE_SPDIFOUT, .set=setenum, .new=newenum, .names=(const char *const[]){
 			"Consumer", "Professional",
 		}, .nameslen=2},

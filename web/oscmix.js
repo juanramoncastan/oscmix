@@ -1,5 +1,14 @@
 'use strict';
 
+import { device_ff802 } from './device_ff802.js';
+import { device_ffucxii } from './device_ffucxii.js';
+import { device_ffufxiii } from './device_ffufxiii.js';
+
+const devices = [device_ff802, device_ffucxii, device_ffufxiii];
+// Fallback
+//let currentDevice = device_ff802;
+let currentDevice = device_ffufxiii;
+
 /* OSC */
 class OSCDecoder {
 	constructor(buffer, offset = 0, length = buffer.byteLength) {
@@ -196,6 +205,99 @@ class ConnectionMIDI extends AbortController {
 class Interface {
 	constructor() {
 		this.methods = new Map();
+		this.durecFiles = [];
+		this.currentFile = -1;
+	}
+
+	initDurec() {
+		const formatTime = (seconds) => {
+			const hrs = Math.floor(seconds / 3600);
+			const min = Math.floor((seconds % 3600) / 60);
+			const sec = seconds % 60;
+			return `${hrs.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+		};
+
+		// Dateiliste binden
+		iface.methods.set('/durec/numfiles', (args) => {
+			this.durecFiles.length = args[0];
+			this.updateDurecFileList();
+		});
+
+		iface.methods.set('/durec/name', (args) => {
+			this.durecFiles[args[0]] = {
+				...this.durecFiles[args[0]],
+				name: args[1]
+			};
+			this.updateDurecFileList();
+		});
+
+		iface.methods.set('/durec/samplerate', (args) => {
+			this.durecFiles[args[0]] = {
+				...this.durecFiles[args[0]],
+				samplerate: args[1]
+			};
+		});
+
+		iface.methods.set('/durec/channels', (args) => {
+			this.durecFiles[args[0]] = {
+				...this.durecFiles[args[0]],
+				channels: args[1]
+			};
+		});
+
+		iface.methods.set('/durec/length', (args) => {
+			this.durecFiles[args[0]] = {
+				...this.durecFiles[args[0]],
+				length: args[1]
+			};
+			document.getElementById('durec-time').max = args[1];
+		});
+
+		// Steuerelemente
+		document.getElementById('durec-record').addEventListener('click', () => {
+			iface.send('/durec/record', ',i', [this.currentFile]); // Komma hinzufügen
+		});
+
+		document.getElementById('durec-play').addEventListener('click', () => {
+			iface.send('/durec/play', ',i', [this.currentFile]); // Komma hinzufügen
+		});
+
+		document.getElementById('durec-stop').addEventListener('click', () => {
+			iface.send('/durec/stop', ',', []); // Typ-String muss ',' sein
+		});
+
+		document.getElementById('durec-delete').addEventListener('click', () => {
+			iface.send('/durec/delete', ',i', [this.currentFile]); // Komma hinzufügen
+		});
+		document.getElementById('durec-file').addEventListener('change', (e) => {
+			this.currentFile = parseInt(e.target.value);
+			const file = this.durecFiles[this.currentFile];
+			if (file) {
+				document.getElementById('durec-samplerate').textContent = file.samplerate || '---';
+				document.getElementById('durec-channels').textContent = file.channels || '--';
+			}
+		});
+
+		document.getElementById('durec-time').addEventListener('input', (e) => {
+			document.getElementById('durec-time-display').textContent = formatTime(e.target.value);
+		});
+
+		iface.bind('/durec/time', ',i', // Komma hinzufügen
+				   document.getElementById('durec-time'), 'value',
+				   'input'
+				   );
+	}
+
+	updateDurecFileList() {
+		const select = document.getElementById('durec-file');
+		select.innerHTML = '<option value="-1">New Recording...</option>';
+
+		this.durecFiles.forEach((file, index) => {
+			const option = document.createElement('option');
+			option.value = index;
+			option.textContent = file.name || `Recording ${index + 1}`;
+			select.appendChild(option);
+		});
 	}
 
 	#connection;
@@ -415,21 +517,6 @@ class Channel {
 	static OUTPUT = 'output';
 	static PLAYBACK = 'playback';
 
-	static #inputNames = [
-		'Mic/Line 1', 'Mic/Line 2', 'Inst/Line 3', 'Inst/Line 4',
-		'Analog 5', 'Analog 6', 'Analog 7', 'Analog 8',
-		'SPDIF L', 'SPDIF R', 'AES L', 'AES R',
-		'ADAT 1', 'ADAT 2', 'ADAT 3', 'ADAT 4',
-		'ADAT 5', 'ADAT 6', 'ADAT 7', 'ADAT 8',
-	];
-	static #outputNames = [
-		'Analog 1', 'Analog 2', 'Analog 3', 'Analog 4',
-		'Analog 5', 'Analog 6', 'Phones 7', 'Phones 8',
-		'SPDIF L', 'SPDIF R', 'AES L', 'AES R',
-		'ADAT 1', 'ADAT 2', 'ADAT 3', 'ADAT 4',
-		'ADAT 5', 'ADAT 6', 'ADAT 7', 'ADAT 8',
-	];
-
 	static #elements = new Set([
 		'mute',
 		'fx',
@@ -494,32 +581,17 @@ class Channel {
 
 		let defName;
 		const prefix = `/${type}/${index + 1}`;
-		const flags = [];
+		const flags = currentDevice.getFlags(type, index);
 		switch (type) {
 		case Channel.INPUT:
-			flags.push('input');
-			if (index == 0 || index == 1)
-				flags.push('48v');
-			if (index == 2 || index == 3)
-				flags.push('hi-z');
-			if (index <= 3)
-				flags.push('autoset');
-			if (index <= 7) {
-				if (index >= 2)
-					flags.push('reflevel');
-				flags.push('gain');
-			}
-			defName = Channel.#inputNames[index];
+			defName = currentDevice.inputNames[index];
 			break;
 		case Channel.PLAYBACK:
 			flags.push('playback');
-			defName = Channel.#outputNames[index];
+			defName = currentDevice.outputNames[index];
 			break;
 		case Channel.OUTPUT:
-			flags.push('output');
-			if (index <= 7)
-				flags.push('reflevel');
-			defName = Channel.#outputNames[index];
+			defName = currentDevice.outputNames[index];
 
 			const selects = document.querySelectorAll('select.channel-volume-output');
 			for (const select of selects) {
@@ -581,7 +653,7 @@ class Channel {
 			};
 			this.volume = [];
 			this.pan = [];
-			for (let i = 0; i < 20; ++i) {
+			for (let i = 0; i < currentDevice.outputNames.length; ++i) {
 				this.volume[i] = -65;
 				this.pan[i] = 0;
 				iface.methods.set(`/mix/${i+1}${prefix}`, (args) => {
@@ -782,7 +854,7 @@ function setupInterface() {
 	let midiAccess;
 	connectionType.dataset.value = connectionType.value;
 	connectionType.addEventListener('change', (event) => {
-		event.target.dataset.value = event.target.value
+		event.target.dataset.value = event.target.value;
 		if (midiAccess) {
 			midiPorts.input.replaceChildren();
 			midiPorts.output.replaceChildren();
@@ -790,34 +862,55 @@ function setupInterface() {
 			midiPorts.output.disabled = true;
 			midiAccess.removeEventListener('statechange', midiStateChanged);
 			midiAccess = null;
+			currentDevice = null;
 		}
+
 		if (event.target.value == 'MIDI') {
 			navigator.requestMIDIAccess({sysex: true}).then((access) => {
-				if (event.target.value != 'MIDI')
-					return;
+				if (event.target.value != 'MIDI') return;
+
+
+				const detectDevice = (portName) => {
+					return devices.find(device => {
+						if (!portName) return false;
+						// Check if the portName starts with the device name and contains any of the midiPortNames
+						return portName.startsWith(device.deviceName) &&
+						device.midiPortNames.some(port => portName.includes(port));
+					});
+				};
+
+				const updateCurrentDevice = () => {
+					const inputPort = access.inputs.get(midiPorts.input.value);
+					const outputPort = access.outputs.get(midiPorts.output.value);
+					currentDevice = detectDevice(inputPort?.name) || detectDevice(outputPort?.name);
+					if (currentDevice) {
+						console.log('Active device:', currentDevice.deviceName);
+						reinitializeUI(); // Reinitialize the UI after updating the current device
+					}
+				};
+
 				for (const [select, ports] of [[midiPorts.input, access.inputs], [midiPorts.output, access.outputs]]) {
-					let prev, defaultOption;
+					let prev;
 					for (const port of ports.values()) {
 						const option = new Option(port.name, port.id);
 						select.add(option);
-						if (port.id == select.dataset.id)
+
+						// Automatische Auswahl bei Geräteübereinstimmung
+						if (!select.dataset.id && detectDevice(port.name)) {
 							option.selected = true;
-						if (port.name.match(/^Fireface UCX II \(/) && port.name == prev)
-							defaultOption = option;
-						else
-							prev = port.name;
+							select.dataset.id = port.id;
+						}
 					}
-					if (select.value != select.dataset.id && defaultOption)
-						defaultOption.selected = true;
-					select.dataset.id = select.value;
 					select.disabled = false;
+					select.addEventListener('change', updateCurrentDevice);
 				}
+
 				midiAccess = access;
 				midiAccess.addEventListener('statechange', midiStateChanged);
+				updateCurrentDevice(); // Initiale Erkennung
 			});
 		}
 	});
-
 	const icon = document.getElementById('connection-icon');
 
 	let connection;
@@ -865,7 +958,7 @@ function setupInterface() {
 	for (const [type, id] of [[Channel.INPUT, 'inputs'], [Channel.PLAYBACK, 'playbacks'], [Channel.OUTPUT, 'outputs']]) {
 		const div = document.getElementById(id);
 		let left;
-		for (let i = 0; i < 20; ++i) {
+		for (let i = 0; i < currentDevice.outputNames.length; ++i) {
 			const channel = new Channel(type, i, iface, left);
 			div.appendChild(channel.element);
 			left = i % 2 == 0 ? channel : null;
@@ -925,13 +1018,16 @@ function setupInterface() {
 	iface.bind('/clock/wckout', ',i', document.getElementById('clock-wckout'), 'checked', 'change');
 	iface.bind('/clock/wcksingle', ',i', document.getElementById('clock-wcksingle'), 'checked', 'change');
 	iface.bind('/clock/wckterm', ',i', document.getElementById('clock-wckterm'), 'checked', 'change');
+	iface.bind('/hardware/aesinput', ',i', document.getElementById('hardware-aesinput'), 'selectedIndex', 'change');
 	iface.bind('/hardware/opticalout', ',i', document.getElementById('hardware-opticalout'), 'selectedIndex', 'change');
+	iface.bind('/hardware/opticalout2', ',i', document.getElementById('hardware-opticalout2'), 'selectedIndex', 'change');
 	iface.bind('/hardware/spdifout', ',i', document.getElementById('hardware-spdifout'), 'selectedIndex', 'change');
 	iface.bind('/hardware/ccmix', ',i', document.getElementById('hardware-ccmix'), 'selectedIndex', 'change');
 	iface.bind('/hardware/standalonemidi', ',i', document.getElementById('hardware-standalonemidi'), 'checked', 'change');
 	iface.bind('/hardware/standalonearc', ',i', document.getElementById('hardware-standalonearc'), 'selectedIndex', 'change');
 	iface.bind('/hardware/lockkeys', ',i', document.getElementById('hardware-lockkeys'), 'selectedIndex', 'change');
 	iface.bind('/hardware/remapkeys', ',i', document.getElementById('hardware-remapkeys'), 'checked', 'change');
+	iface.bind('/durec/file', 'i', document.getElementById('durec-file'), 'value', 'change');
 
 	/* allow scrolling on number and range inputs */
 	const wheel = (event) => {
@@ -951,6 +1047,48 @@ function setupInterface() {
 		node.addEventListener('focus', focus);
 		node.addEventListener('blur', blur);
 	}
+	iface.initDurec();
+}
+function reinitializeUI() {
+	// Clear existing UI elements
+	const inputsContainer = document.getElementById('inputs');
+	const outputsContainer = document.getElementById('outputs');
+	const playbacksContainer = document.getElementById('playbacks');
+	const mainOutSelect = document.getElementById('controlroom-mainout');
+	inputsContainer.innerHTML = '';
+	outputsContainer.innerHTML = '';
+	playbacksContainer.innerHTML = '';
+	mainOutSelect.innerHTML = ''; // Clear existing options
+
+	// Populate Main Out options as stereo pairs
+	for (let i = 0; i < currentDevice.outputNames.length; i += 2) {
+		if (i + 1 < currentDevice.outputNames.length) {
+			const left = currentDevice.outputNames[i];
+			const right = currentDevice.outputNames[i + 1].split(' ').pop(); // Extract content after the last space
+			const option = document.createElement('option');
+			option.textContent = `${left}/${right}`;
+			mainOutSelect.appendChild(option);
+		}
+	}
+
+	// Recreate channels based on the current device
+	for (const [type, container, names] of [
+		[Channel.INPUT, inputsContainer, currentDevice.inputNames],
+		[Channel.PLAYBACK, playbacksContainer, currentDevice.outputNames],
+		[Channel.OUTPUT, outputsContainer, currentDevice.outputNames],
+	]) {
+		let left;
+		for (let i = 0; i < names.length; ++i) {
+			const channel = new Channel(type, i, iface, left);
+			container.appendChild(channel.element);
+			left = i % 2 === 0 ? channel : null;
+		}
+	}
+	console.log('UI reinitialized for device:', currentDevice.deviceName);
 }
 
-document.addEventListener('DOMContentLoaded', setupInterface);
+
+document.addEventListener('DOMContentLoaded', () => {
+	setupInterface();
+	iface.initDurec();
+});

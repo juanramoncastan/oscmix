@@ -469,7 +469,6 @@
 | 3443     | AN 1 room EQ band 9 gain   | 1/10 fixed point, -20.0dB–20.0dB           |
 | 3444     | AN 1 room EQ band 9 freq   | 20Hz–20000Hz                               |
 | 3445     | AN 1 room EQ band 9 q      | 0.4–9.9                                    |
-|...	  | ...                        | ...                                        |
 | 3446     | AN 2 delay                 | 1/100 fixed point, 0.00ms–42.50ms          |
 | 3447     | AN 2 room EQ enable        | 0=off 1=on                                 |
 |...	  | ...                        | ...                                        |
@@ -489,7 +488,6 @@
 | 34E7     | AN 7 room EQ enable        | 0=off 1=on                                 |
 |...	  | ...                        | ...                                        |
 |...	  | ...                        | ...                                        |
-
 
 ### Control Room
 
