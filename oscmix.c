@@ -404,9 +404,9 @@ newoutputstereo(struct context *ctx, int val)
 	out = &outputs[ctx->param.out & ~1];
 	out[0].stereo = val;
 	out[1].stereo = val;
-	snprintf(ctx->addr, ctx->addrend - ctx->addr, "/output/%d/stereo", (int)(out - outputs + 1));
+	snprintf(ctx->addr, ctx->addrend - ctx->addr, "/output/%d/stereo", (int)(out - outputs) + 1);
 	oscsend(ctx->addr, ",i", val != 0);
-	snprintf(ctx->addr, ctx->addrend - ctx->addr, "/output/%d/stereo", (int)(out - outputs + 2));
+	snprintf(ctx->addr, ctx->addrend - ctx->addr, "/output/%d/stereo", (int)(out - outputs) + 2);
 	oscsend(ctx->addr, ",i", val != 0);
 }
 
@@ -1279,8 +1279,8 @@ static const struct node roottree[] = {
 	}},
 	{"clock", .tree=(const struct node[]){
 		{"source", CLOCK_SOURCE, .set=setenum, .new=newenum, .names=(const char *const[]){
-			"Internal", "Word Clock", "SPDIF", "AES", "Optical",
-		}, .nameslen=5},
+			"Internal", "Word Clock", "AES", "Opt. 1", "Opt. 2", "MADI Opt.", "MADI Coax.",
+		}, .nameslen=7},
 		{"samplerate", CLOCK_SAMPLERATE, .new=newsamplerate},
 		{"wckout", CLOCK_WCKOUT, .set=setbool, .new=newbool},
 		{"wcksingle", CLOCK_WCKSINGLE, .set=setbool, .new=newbool},
@@ -1289,7 +1289,7 @@ static const struct node roottree[] = {
 	}},
 	{"hardware", .tree=(const struct node[]){
 		{"aesin", HARDWARE_AESIN , .set=setenum, .new=newenum, .names=(const char *const[]){
-			"XLR", "Optical 2",
+			"XLR", "Opt. 2",
 		}, .nameslen=2},
 		{"opticalin", HARDWARE_OPTICALIN, .set=setenum, .new=newenum, .names=(const char *const[]){
 			"ADAT", "SPDIF",
@@ -1317,7 +1317,7 @@ static const struct node roottree[] = {
 			"All Ch.", "Phones",
 		}, .nameslen=2},
 		{"standalonemidi", HARDWARE_STANDALONEMIDI, .set=setenum, .new=newenum, .names=(const char *const[]){
-			"Off", "MIDI 1", "MIDI 2", "MADI O", "MADI C",
+			"Off", "MIDI 1", "MIDI 2", "MADI Opt.", "MADI Coax.",
 		}, .nameslen=5},
 		{"standalonearc", HARDWARE_STANDALONEARC, .set=setenum, .new=newenum, .names=(const char *const[]){
 			"Volume", "1s Op", "Normal",
