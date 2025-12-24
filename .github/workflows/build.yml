@@ -203,12 +203,11 @@ jobs:
           path: ${{ env.ARTIFACT_PATH }}
 
       - name: Prepare web artifact (on x86_64 Linux)
+        # needed only once, so we use x86_64 Linux for this
         if: matrix.platform == 'linux' && matrix.arch == 'x86_64'
         run: |
           mkdir -p web/pub/wasm
           cp web/oscmix.wasm web/pub/wasm/
-          cp web/oscmix.js web/pub/wasm/ 2>/dev/null || true
-          
           WEB_ARTIFACT_NAME="pub-${{ needs.version-info.outputs.artifact_version }}"
           tar czf "${WEB_ARTIFACT_NAME}.tar.gz" -C web/pub .
           echo "WEB_ARTIFACT_PATH=${WEB_ARTIFACT_NAME}.tar.gz" >> $GITHUB_ENV
