@@ -1,7 +1,6 @@
 # oscmix
+[![Build and Release](https://github.com/huddx01/oscmix/actions/workflows/build.yml/badge.svg?branch=dev)](https://github.com/huddx01/oscmix/actions/workflows/build.yml)
  
-[![builds.sr.ht status](https://builds.sr.ht/~mcf/oscmix/commits/main.svg)](https://builds.sr.ht/~mcf/oscmix/commits/main)
-
 oscmix implements an OSC API for RME's Fireface UCX II running in
 class-compliant mode, allowing full control of the device's
 functionality through OSC on POSIX operating systems supporting USB
