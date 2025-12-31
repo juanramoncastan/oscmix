@@ -71,7 +71,7 @@ make gtk
 make tools/regtool
 ```
 If you want to build the wasm too (needed for own webserver), you'll need additional dependancies. 
-See: https://github.com/huddx01/oscmix/edit/dev/README.md#web-ui
+See: https://github.com/huddx01/oscmix/tree/dev?tab=readme-ov-file#web-ui
 
 ## General Oscmix Usage
 
