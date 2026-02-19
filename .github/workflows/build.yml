@@ -8,8 +8,15 @@ on:
       - 'v*'
     branches:
       - dev
+      
   workflow_dispatch:
-
+    inputs:
+      deploy_pages:
+        description: 'Deploy web artifact to GitHub Pages branch?'
+        type: boolean
+        required: false
+        default: false
+        
 permissions:
   contents: write
 
@@ -440,3 +447,63 @@ jobs:
             ./artifacts/**/*.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+  deploy-pages:
+    runs-on: ubuntu-latest
+    needs: [version-info, build]
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy_pages == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: repo
+
+      - name: Download web artifact
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: web-wasm
+          path: web-artifact
+
+      - name: Check if web artifact exists
+        if: hashFiles('web-artifact/*.tar.gz') == ''
+        run: |
+          echo "No web artifact found – skipping deployment to github-pages."
+          exit 0
+
+      - name: Switch to github-pages branch (create if not exists)
+        run: |
+          cd repo
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+          if git ls-remote --heads origin github-pages | grep github-pages; then
+            git checkout github-pages
+          else
+            git checkout --orphan github-pages
+            git rm -rf .
+            git commit --allow-empty -m "Initial orphan branch for GitHub Pages"
+            git push origin github-pages
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean old files and extract new web content
+        run: |
+          cd repo
+          find . -mindepth 1 -not -path './.git*' -delete
+          tar xzf ../web-artifact/*.tar.gz
+
+      - name: Commit and push to github-pages
+        run: |
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit – working tree clean."
+          else
+            git commit -m "Update GitHub Pages from web artifact ${{ needs.version-info.outputs.artifact_version }}"
+            git push origin github-pages
+          fi
