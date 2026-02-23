@@ -102,12 +102,10 @@ regtoctl(int reg, struct param *p)
 			}
 		}
 	}
-	else if (reg - 0x30A0U < 0x20 * LEN(outputs)) {
-
-		unsigned base = reg - 0x30A0;
+	else if (reg - 0x3426U < 0x20 * LEN(outputs)) {
+		unsigned base = reg - 0x3426;
 		p->out = base >> 5;
 		unsigned subreg = base & 0x1F;
-
 		switch (subreg) {
 			case 0x00: return ROOMEQ_DELAY;
 			case 0x01: return ROOMEQ;

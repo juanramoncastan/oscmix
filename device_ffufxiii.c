@@ -30,9 +30,7 @@ static const struct channelinfo inputs[] = {
 	{"Analog 6",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 7",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 8",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
-	{"Mic/Inst 9",  INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ,
-			.gain={0, 750}
-	},
+	{"Mic/Inst 9",  INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
 	{"Mic/Inst 10", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
 	{"Mic/Inst 11", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
 	{"Mic/Inst 12", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
@@ -103,11 +101,9 @@ regtoctl(int reg, struct param *p)
 		}
 	}
 	else if (reg - 0x3426U < 0x20 * LEN(outputs)) {
-
 		unsigned base = reg - 0x3426;
 		p->out = base >> 5;
 		unsigned subreg = base & 0x1F;
-
 		switch (subreg) {
 			case 0x00: return ROOMEQ_DELAY;
 			case 0x01: return ROOMEQ;
@@ -164,7 +160,7 @@ regtoctl(int reg, struct param *p)
 		case 0x0003: return INPUT_RECORD;
 		case 0x0004: return UNKNOWN;
 		case 0x0005: return INPUT_PLAYCHAN;
-		case 0x0006: return UNKNOWN;
+		case 0x0006: return INPUT_WIDTH;
 		case 0x0007: return INPUT_MSPROC;
 		case 0x0008: return INPUT_PHASE;
 		case 0x0009: return INPUT_GAIN;
@@ -184,7 +180,7 @@ regtoctl(int reg, struct param *p)
 		case 0x11A9: return OUTPUT_REFLEVEL;
 		case 0x11AA: return OUTPUT_CROSSFEED;
 		case 0x11AB: return OUTPUT_VOLUMECAL;
-		case 0x11AC: return UNKNOWN;
+		//case 0x11AC: return UNKNOWN;
 
 		case 0x000D: return LOWCUT;
 		case 0x000E: return LOWCUT_FREQ;
@@ -313,6 +309,7 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case INPUT_STEREO:      reg = 0x02; goto channel;
 		case INPUT_RECORD:      reg = 0x03; goto channel;
 		case INPUT_PLAYCHAN:    reg = 0x05; goto channel;
+		case INPUT_WIDTH:       reg = 0x06; goto channel;
 		case INPUT_MSPROC:      reg = 0x07; goto channel;
 		case INPUT_PHASE:       reg = 0x08; goto channel;
 		case INPUT_GAIN:        if (!(flags & INPUT_HAS_GAIN)) break;
@@ -446,38 +443,38 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case HARDWARE_ARCDELTA:       return 0x3203;
 		case HARDWARE_ARCBUTTONS:     return 0x3204;
 
-		case ROOMEQ_DELAY:            reg = 0x3426; goto roomeq;
-		case ROOMEQ:                  reg = 0x3427; goto roomeq;
-		case ROOMEQ_BAND1TYPE:        reg = 0x3428; goto roomeq;
-		case ROOMEQ_BAND1GAIN:        reg = 0x3429; goto roomeq;
-		case ROOMEQ_BAND1FREQ:        reg = 0x342A; goto roomeq;
-		case ROOMEQ_BAND1Q:           reg = 0x342B; goto roomeq;
-		case ROOMEQ_BAND2GAIN:        reg = 0x342C; goto roomeq;
-		case ROOMEQ_BAND2FREQ:        reg = 0x342D; goto roomeq;
-		case ROOMEQ_BAND2Q:           reg = 0x342E; goto roomeq;
-		case ROOMEQ_BAND3GAIN:        reg = 0x342F; goto roomeq;
-		case ROOMEQ_BAND3FREQ:        reg = 0x3430; goto roomeq;
-		case ROOMEQ_BAND3Q:           reg = 0x3431; goto roomeq;
-		case ROOMEQ_BAND4GAIN:        reg = 0x3432; goto roomeq;
-		case ROOMEQ_BAND4FREQ:        reg = 0x3433; goto roomeq;
-		case ROOMEQ_BAND4Q:           reg = 0x3434; goto roomeq;
-		case ROOMEQ_BAND5GAIN:        reg = 0x3435; goto roomeq;
-		case ROOMEQ_BAND5FREQ:        reg = 0x3436; goto roomeq;
-		case ROOMEQ_BAND5Q:           reg = 0x3437; goto roomeq;
-		case ROOMEQ_BAND6GAIN:        reg = 0x3438; goto roomeq;
-		case ROOMEQ_BAND6FREQ:        reg = 0x3439; goto roomeq;
-		case ROOMEQ_BAND6Q:           reg = 0x343A; goto roomeq;
-		case ROOMEQ_BAND7GAIN:        reg = 0x343B; goto roomeq;
-		case ROOMEQ_BAND7FREQ:        reg = 0x343C; goto roomeq;
-		case ROOMEQ_BAND7Q:           reg = 0x343D; goto roomeq;
-		case ROOMEQ_BAND8TYPE:        reg = 0x343E; goto roomeq;
-		case ROOMEQ_BAND8GAIN:        reg = 0x343F; goto roomeq;
-		case ROOMEQ_BAND8FREQ:        reg = 0x3440; goto roomeq;
-		case ROOMEQ_BAND8Q:           reg = 0x3441; goto roomeq;
-		case ROOMEQ_BAND9TYPE:        reg = 0x3442; goto roomeq;
-		case ROOMEQ_BAND9GAIN:        reg = 0x3443; goto roomeq;
-		case ROOMEQ_BAND9FREQ:        reg = 0x3444; goto roomeq;
-		case ROOMEQ_BAND9Q:           reg = 0x3445; goto roomeq;
+		case ROOMEQ_DELAY:            reg = 0x30A0; goto roomeq;
+		case ROOMEQ:                  reg = 0x30A1; goto roomeq;
+		case ROOMEQ_BAND1TYPE:        reg = 0x30A2; goto roomeq;
+		case ROOMEQ_BAND1GAIN:        reg = 0x30A3; goto roomeq;
+		case ROOMEQ_BAND1FREQ:        reg = 0x30A4; goto roomeq;
+		case ROOMEQ_BAND1Q:           reg = 0x30A5; goto roomeq;
+		case ROOMEQ_BAND2GAIN:        reg = 0x30A6; goto roomeq;
+		case ROOMEQ_BAND2FREQ:        reg = 0x30A7; goto roomeq;
+		case ROOMEQ_BAND2Q:           reg = 0x30A8; goto roomeq;
+		case ROOMEQ_BAND3GAIN:        reg = 0x30A9; goto roomeq;
+		case ROOMEQ_BAND3FREQ:        reg = 0x30AA; goto roomeq;
+		case ROOMEQ_BAND3Q:           reg = 0x30AB; goto roomeq;
+		case ROOMEQ_BAND4GAIN:        reg = 0x30AC; goto roomeq;
+		case ROOMEQ_BAND4FREQ:        reg = 0x30AD; goto roomeq;
+		case ROOMEQ_BAND4Q:           reg = 0x30AE; goto roomeq;
+		case ROOMEQ_BAND5GAIN:        reg = 0x30AF; goto roomeq;
+		case ROOMEQ_BAND5FREQ:        reg = 0x30B0; goto roomeq;
+		case ROOMEQ_BAND5Q:           reg = 0x30B1; goto roomeq;
+		case ROOMEQ_BAND6GAIN:        reg = 0x30B2; goto roomeq;
+		case ROOMEQ_BAND6FREQ:        reg = 0x30B3; goto roomeq;
+		case ROOMEQ_BAND6Q:           reg = 0x30B4; goto roomeq;
+		case ROOMEQ_BAND7GAIN:        reg = 0x30B5; goto roomeq;
+		case ROOMEQ_BAND7FREQ:        reg = 0x30B6; goto roomeq;
+		case ROOMEQ_BAND7Q:           reg = 0x30B7; goto roomeq;
+		case ROOMEQ_BAND8TYPE:        reg = 0x30B8; goto roomeq;
+		case ROOMEQ_BAND8GAIN:        reg = 0x30B9; goto roomeq;
+		case ROOMEQ_BAND8FREQ:        reg = 0x30BA; goto roomeq;
+		case ROOMEQ_BAND8Q:           reg = 0x30BB; goto roomeq;
+		case ROOMEQ_BAND9TYPE:        reg = 0x30BC; goto roomeq;
+		case ROOMEQ_BAND9GAIN:        reg = 0x30BD; goto roomeq;
+		case ROOMEQ_BAND9FREQ:        reg = 0x30BE; goto roomeq;
+		case ROOMEQ_BAND9Q:           reg = 0x30BF; goto roomeq;
 		roomeq:
 			if (p->out == -1) break;
 			return reg + (p->out << 5);
