@@ -845,6 +845,202 @@ function importTmreq(event) {
 }
 
 // ════════════════════════════════════════════════
+//  OSC BRIDGE  (postMessage ↔ oscmix opener)
+//
+//  OSC type map (matches TotalMix / oscmix):
+//    Bell=0, Shelving=1, Low Pass=2, High Pass=3
+//
+//  Delay scaling:
+//    internal: 0–42.50 ms
+//    OSC:      0–4.25  (device sends ÷10)
+// ════════════════════════════════════════════════
+
+const OSC_TYPE_TO_NAME = { 0:'Bell', 1:'Shelving', 2:'Low Pass', 3:'High Pass' };
+const OSC_NAME_TO_TYPE = { 'Bell':0, 'Shelving':1, 'Low Pass':2, 'High Pass':3 };
+
+// Channel identifier parsed from URL: e.g. "output/1"
+const urlParams  = new URLSearchParams(window.location.search);
+const oscChannel = urlParams.get('channel') || null; // e.g. "output/1"
+
+// ── Outbound: send a value change to opener via postMessage ──
+function oscSend(addr, value) {
+  if (!window.opener || window.opener.closed) return;
+  window.opener.postMessage({ type: 'ROOMEQ_OSC_SEND', addr, value }, '*');
+}
+
+// Helper — build full OSC address for this channel
+function oscAddr(sub) {
+  return oscChannel ? `/${oscChannel}/${sub}` : null;
+}
+
+// ── Called by UI interactions to notify oscmix ──
+// Wraps all user-triggered changes; called after state is already updated.
+function notifyOSC_band(bandIdx, param) {
+  const addr = oscAddr(`roomeq/band${bandIdx+1}${param}`);
+  if (!addr) return;
+  const b = bands[bandIdx];
+  let value;
+  if (param === 'gain') value = b.gain;
+  if (param === 'freq') value = b.freq;
+  if (param === 'q')    value = b.q;
+  if (param === 'type') {
+    // Only FULL_CHOICE_BANDS have a type OSC address
+    if (!FULL_CHOICE_BANDS.has(bandIdx)) return;
+    value = OSC_NAME_TO_TYPE[b.type] ?? 0;
+  }
+  oscSend(addr, value);
+}
+
+function notifyOSC_delay() {
+  const addr = oscAddr('roomeq/delay');
+  if (!addr) return;
+  oscSend(addr, delay / 10); // internal ms → OSC ÷10
+}
+
+function notifyOSC_volCal() {
+  const addr = oscAddr('volumecal');
+  if (!addr) return;
+  oscSend(addr, volCal);
+}
+
+function notifyOSC_bypass() {
+  const addr = oscAddr('roomeq');
+  if (!addr) return;
+  // oscmix: roomeq=1 means enabled (not bypassed)
+  oscSend(addr, bypassed ? 0 : 1);
+}
+
+// ── Patch existing interaction points to fire OSC notifications ──
+// We wrap the functions that already exist, calling notify after state update.
+
+// Band knob drag end → notify on mouseup
+const _origMouseup = window.onmouseup;
+window.addEventListener('mouseup', () => {
+  if (knobDrag) {
+    notifyOSC_band(knobDrag.bi, knobDrag.param);
+  }
+  if (extraKnobDrag) {
+    if (extraKnobDrag.key === 'delay')  notifyOSC_delay();
+    if (extraKnobDrag.key === 'volCal') notifyOSC_volCal();
+  }
+});
+
+// Canvas node drag end → gain + freq
+const _origCanvasMouseup = canvas.onmouseup;
+window.addEventListener('mouseup', () => {
+  if (nodeDrag) {
+    notifyOSC_band(nodeDrag.band, 'gain');
+    notifyOSC_band(nodeDrag.band, 'freq');
+  }
+});
+
+// Canvas wheel → Q
+canvas.addEventListener('wheel', () => {
+  const r   = canvas.getBoundingClientRect();
+  const hit = getNodeAt(event.clientX - r.left, event.clientY - r.top);
+  if (hit >= 0) notifyOSC_band(hit, 'q');
+}, { passive: true, capture: true });
+
+// Knob wheel nudge → already fires nudge(), patch nudge to notify
+const _origNudge = nudge;
+window.nudge = function(i, p, dir) {
+  _origNudge(i, p, dir);
+  notifyOSC_band(i, p);
+};
+
+// Knob dblclick reset → patch setDefault
+const _origSetDefault = setDefault;
+window.setDefault = function(i, p) {
+  _origSetDefault(i, p);
+  notifyOSC_band(i, p);
+};
+
+// Filter type select changes
+FULL_CHOICE_BANDS.forEach(i => {
+  const sel = document.getElementById(`ftype-${i}`);
+  if (sel) sel.addEventListener('change', () => notifyOSC_band(i, 'type'));
+});
+
+// Extra knob wheel — already fires drawExtraKnob, patch wheel handler
+// (delay & volCal wheel events are defined inline in setupExtraKnobEvents,
+//  we hook via the existing wheel listener capture phase)
+const _extraKnobWheelNotify = (e) => {
+  const key = e.target?.dataset?.extraParam;
+  if (key === 'delay')  notifyOSC_delay();
+  if (key === 'volCal') notifyOSC_volCal();
+};
+document.querySelectorAll('canvas.knob[data-extra-param]').forEach(kc => {
+  kc.addEventListener('wheel', _extraKnobWheelNotify, { passive: true });
+});
+
+// Bypass toggle
+const _origToggleBypass = toggleBypass;
+window.toggleBypass = function() {
+  _origToggleBypass();
+  notifyOSC_bypass();
+};
+
+// ── Inbound: receive OSC values from oscmix opener ──
+// Message format: { type:'ROOMEQ_OSC_RECV', addr:'/output/1/roomeq/band1gain', value:3.5 }
+window.addEventListener('message', (e) => {
+  if (!e.data || e.data.type !== 'ROOMEQ_OSC_RECV') return;
+  const { addr, value } = e.data;
+
+  // Strip channel prefix to get the roomeq sub-address
+  const prefix = oscChannel ? `/${oscChannel}/` : null;
+  const sub = prefix && addr.startsWith(prefix) ? addr.slice(prefix.length) : addr;
+
+  // roomeq bypass
+  if (sub === 'roomeq') {
+    bypassed = value === 0;
+    updateBypassBtn();
+    drawEQ();
+    return;
+  }
+
+  // roomeq/delay
+  if (sub === 'roomeq/delay') {
+    delay = Math.max(0, Math.min(42.50, value * 10)); // OSC ×10 → internal ms
+    drawExtraKnob('delay');
+    return;
+  }
+
+  // volumecal
+  if (sub === 'volumecal') {
+    volCal = Math.max(-24.0, Math.min(3.0, value));
+    drawExtraKnob('volCal');
+    return;
+  }
+
+  // roomeq/band{n}gain|freq|q|type
+  const mBand = sub.match(/^roomeq\/band(\d+)(gain|freq|q|type)$/);
+  if (mBand) {
+    const bi   = parseInt(mBand[1]) - 1;
+    const prop = mBand[2];
+    if (bi < 0 || bi >= N) return;
+    if (prop === 'gain') { bands[bi].gain = clampParam('gain', value); drawKnob(bi,'gain'); drawEQ(); }
+    if (prop === 'freq') { bands[bi].freq = clampParam('freq', value); drawKnob(bi,'freq'); drawEQ(); }
+    if (prop === 'q')    { bands[bi].q    = clampParam('q',    value); drawKnob(bi,'q');    drawEQ(); }
+    if (prop === 'type' && FULL_CHOICE_BANDS.has(bi)) {
+      const name = OSC_TYPE_TO_NAME[Math.round(value)];
+      if (name) {
+        bands[bi].type = name;
+        const sel = document.getElementById(`ftype-${bi}`);
+        if (sel) sel.value = name;
+        drawEQ();
+      }
+    }
+  }
+});
+
+// ── Update window title with channel info ──
+if (oscChannel) {
+  document.title = `Room EQ — ${oscChannel}`;
+  const h1 = document.querySelector('h1');
+  if (h1) h1.textContent = `Room EQ [${oscChannel}] v.0.0.1`;
+}
+
+// ════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════
 refreshPresets();
