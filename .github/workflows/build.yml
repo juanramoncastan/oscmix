@@ -309,9 +309,9 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes – wasm unchanged."
           else
-            # [skip ci] prevents retriggering this workflow, deploy-pages.yml
-            # uses its own trigger on web/pub/** and will still pick this up
-            git commit -m "ci: update oscmix.wasm [skip ci]"
+            # No [skip ci] here – deploy-pages.yml must pick this up.
+            # build.yml will NOT retrigger because web/pub/** is not in its paths filter.
+            git commit -m "ci: update oscmix.wasm"
             git push origin dev
           fi
 
