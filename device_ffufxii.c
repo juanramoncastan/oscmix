@@ -169,7 +169,6 @@ regtoctl(int reg, struct param *p)
 		case 0x05AA: return UNKNOWN;
 		case 0x05AB: return OUTPUT_VOLUMECAL;
 
-
 		case 0x000C: return LOWCUT;
 		case 0x000D: return LOWCUT_FREQ;
 		case 0x000E: return LOWCUT_SLOPE;
@@ -234,22 +233,19 @@ regtoctl(int reg, struct param *p)
 		case 0x3067: return CLOCK_WCKTERM;
 		case 0x3068: return UNKNOWN;
 
+		// TODO: Verify if this is coorrect. Just my guess for now.
 		case 0x3078: return HARDWARE_AESIN;
 		case 0x307A: return HARDWARE_SPDIFOUT;
 		case 0x307C: return HARDWARE_INTERFACEMODE;
 		case 0x307D: return HARDWARE_STANDALONEMIDI;
 		case 0x307E: return HARDWARE_STANDALONEARC;
 		case 0x307F: return HARDWARE_LCDCONTRAST;
-
-
-		// TODO: Verify if this is coorrect. Just my guess for now.
 		case 0x3080: return HARDWARE_LOCKKEYS;
 		case 0x3081: return HARDWARE_REMAPKEYS;
 		case 0x3082: return HARDWARE_PROGRAMKEY01;
 		case 0x3083: return HARDWARE_PROGRAMKEY02;
 		case 0x3084: return HARDWARE_PROGRAMKEY03;
 		case 0x3085: return HARDWARE_PROGRAMKEY04;
-		//case 0x3086: return HARDWARE_LCDCONTRAST;
 
 		case 0x3087: return HARDWARE_OPTICALOUT;
 		case 0x3088: return HARDWARE_OPTICALOUT2;
@@ -259,7 +255,6 @@ regtoctl(int reg, struct param *p)
 		case 0x3202: return HARDWARE_DSPSTATUS;
 		case 0x3203: return HARDWARE_ARCDELTA;
 		case 0x3204: return HARDWARE_ARCBUTTONS;
-
 
 		case 0x3580: return DUREC_STATUS;
 		case 0x3581: return DUREC_TIME;
@@ -278,12 +273,12 @@ regtoctl(int reg, struct param *p)
 		case 0x358E: return DUREC_NAME3;
 		case 0x358F: return DUREC_INFO;
 		case 0x3590: return DUREC_LENGTH;
-		case 0x3E02: return SETUP_ARCLEDS;
-
 		// TODO: Verify if these registers exist and what they do.
 		//case 0x3D43: return HARDWARE_STANDALONEMIDI;
-		//case 0x3D44: return HARDWARE_CCMODE;
+		case 0x3D44: return HARDWARE_CCMODE;
 		//case 0x3D45: return HARDWARE_STANDALONEARC;
+		case 0x3E02: return SETUP_ARCLEDS;
+
 	}
 	return -1;
 }
@@ -328,7 +323,7 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case OUTPUT_REFLEVEL:    if (!(flags & OUTPUT_HAS_REFLEVEL)) break;
 			reg = 0x08; goto channel;
 		case OUTPUT_CROSSFEED:   reg = 0x09; goto channel;
-		// register 0x0A is unknown. Maybe sth with roomeq?
+		// register 0x0A is unknown.
 		case OUTPUT_VOLUMECAL:   reg = 0x0B; goto channel;
 		case LOWCUT:             reg = 0x0C; goto channel;
 		case LOWCUT_FREQ:        reg = 0x0D; goto channel;
@@ -411,16 +406,14 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case CLOCK_WCKSINGLE:         return 0x3066;
 		case CLOCK_WCKTERM:           return 0x3067;
 
+		// TODO: Verify if this is coorrect. Just my guess for now.
 		case HARDWARE_AESIN:          return 0x3078;
 		case HARDWARE_SPDIFOUT:       return 0x307A;
-
-
 		case HARDWARE_INTERFACEMODE:  return 0x307C;
 		//case HARDWARE_CCROUTING:      return 0x307B;
 		case HARDWARE_STANDALONEMIDI: return 0x307D;
 		case HARDWARE_STANDALONEARC:  return 0x307E;
 		case HARDWARE_LCDCONTRAST:    return 0x307F;
-
 		case HARDWARE_LOCKKEYS:       return 0x3080;
 		case HARDWARE_REMAPKEYS:      return 0x3081;
 		case HARDWARE_PROGRAMKEY01:   return 0x3082;
@@ -428,10 +421,8 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case HARDWARE_PROGRAMKEY03:   return 0x3084;
 		case HARDWARE_PROGRAMKEY04:   return 0x3085;
 
-
 		case HARDWARE_OPTICALOUT:     return 0x3087;
 		case HARDWARE_OPTICALOUT2:    return 0x3088;
-
 
 		case HARDWARE_DSPVERLOAD:     return 0x3200;
 		case HARDWARE_DSPAVAIL:       return 0x3201;
@@ -474,7 +465,13 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		roomeq:
 			if (p->out == -1) break;
 			return reg + (p->out << 5);
+
+		// TODO: Verify if these registers exist and what they do.
+		//case HARDWARE_STANDALONEMIDI:  return 0x3D43;
+		case HARDWARE_CCMODE:         return 0x3D44;
+		//case HARDWARE_STANDALONEARC:   return 0x3D45;
 		case SETUP_ARCLEDS:           return 0x3E02;
+
 		case REFRESH:                 return 0x3E03;
 		case SETUP_STORE:             return 0x3E06;
 		case DUREC_CONTROL:           return 0x3E9A;
