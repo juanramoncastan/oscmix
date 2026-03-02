@@ -581,7 +581,8 @@ jobs:
           echo "1. Run oscmix." >> $GITHUB_OUTPUT
           echo "Refer to readme for details: https://github.com/huddx01/oscmix/tree/dev?tab=readme-ov-file#running" >> $GITHUB_OUTPUT
           echo "2. Linux:" >> $GITHUB_OUTPUT
-          echo "Start the script \`run-oscmix-gtk.sh\` in terminal" >> $GITHUB_OUTPUT
+          echo "2a. Start the script \`run-oscmix-gtk.sh\` in terminal" >> $GITHUB_OUTPUT
+          echo "2b. Or just execute the *.AppImage (it manages the alsarawio/alsaseqio/oscmix stuff automatically)" >> $GITHUB_OUTPUT
           echo "3. macOS:" >> $GITHUB_OUTPUT
           echo "Start the included \`oscmix-gtk.app\`" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
