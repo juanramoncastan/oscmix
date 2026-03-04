@@ -16,23 +16,15 @@ static const char *const reflevel_phones[] = {"Low", "High"};
 #define MIX_STRIDE   64
 
 static const struct channelinfo inputs[] = {
-	{"Analog 1",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL,
-			.gain={0, 120},
-			.reflevel={reflevel_input, LEN(reflevel_input)}
-	},
-	{"Analog 2",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL,
-			.gain={0, 120},
-			.reflevel={reflevel_input, LEN(reflevel_input)}
-	},
+	{"Analog 1",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
+	{"Analog 2",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 3",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 4",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 5",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 6",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 7",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
 	{"Analog 8",  INPUT_HAS_GAIN | INPUT_HAS_REFLEVEL, .gain={0, 120}, .reflevel={reflevel_input, LEN(reflevel_input)}},
-	{"Mic/Inst 9",  INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ,
-			.gain={0, 750}
-	},
+	{"Mic/Inst 9",  INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ,.gain={0, 750}},
 	{"Mic/Inst 10", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
 	{"Mic/Inst 11", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
 	{"Mic/Inst 12", INPUT_HAS_GAIN | INPUT_HAS_48V | INPUT_HAS_AUTOSET | INPUT_HAS_HIZ, .gain={0, 750}},
@@ -232,22 +224,25 @@ regtoctl(int reg, struct param *p)
 		case 0x3066: return CLOCK_WCKSINGLE;
 		case 0x3067: return CLOCK_WCKTERM;
 		case 0x3068: return UNKNOWN;
-		// TODO: Looks like the same regs as in ffufxp
+
 		case 0x3078: return HARDWARE_AESIN;
-		case 0x307A: return HARDWARE_SPDIFOUT;
+		case 0x3079: return HARDWARE_OPTICALOUT;
+		case 0x307A: return HARDWARE_OPTICALOUT2;
+		case 0x307B: return HARDWARE_SPDIFOUT;
 		case 0x307C: return HARDWARE_CCMODE;
 		case 0x307D: return HARDWARE_CCROUTING;
 		case 0x307E: return HARDWARE_STANDALONEMIDI;
 		case 0x307F: return HARDWARE_STANDALONEARC;
 		case 0x3080: return HARDWARE_LOCKKEYS;
 		case 0x3081: return HARDWARE_REMAPKEYS;
+
+		// TODO: Verify, but I am pretty sure thes are the PROGRAMKEY01-04 regs (exact 4 regs between REMAPKEYS and LCDCONTRAST)
 		case 0x3082: return HARDWARE_PROGRAMKEY01;
 		case 0x3083: return HARDWARE_PROGRAMKEY02;
 		case 0x3084: return HARDWARE_PROGRAMKEY03;
 		case 0x3085: return HARDWARE_PROGRAMKEY04;
+
 		case 0x3086: return HARDWARE_LCDCONTRAST;
-		case 0x3087: return HARDWARE_OPTICALOUT;
-		case 0x3088: return HARDWARE_OPTICALOUT2;
 
 		case 0x3200: return HARDWARE_DSPVERLOAD;
 		case 0x3201: return HARDWARE_DSPAVAIL;
@@ -306,6 +301,7 @@ static int ctltoreg(enum control ctl, const struct param *p)
 			reg = 0x0A; goto channel;
 		case INPUT_AUTOSET:        if (!(flags & INPUT_HAS_AUTOSET)) break;
 			reg = 0x0B; goto channel;
+
 		case OUTPUT_VOLUME:      reg = 0x00; goto channel;
 		case OUTPUT_PAN:         reg = 0x01; goto channel;
 		case OUTPUT_MUTE:        reg = 0x02; goto channel;
@@ -319,6 +315,7 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case OUTPUT_CROSSFEED:   reg = 0x09; goto channel;
 		// register 0x0A is unknown.
 		case OUTPUT_VOLUMECAL:   reg = 0x0B; goto channel;
+
 		case LOWCUT:             reg = 0x0C; goto channel;
 		case LOWCUT_FREQ:        reg = 0x0D; goto channel;
 		case LOWCUT_SLOPE:       reg = 0x0E; goto channel;
@@ -401,18 +398,21 @@ static int ctltoreg(enum control ctl, const struct param *p)
 		case CLOCK_WCKTERM:           return 0x3067;
 
 		case HARDWARE_AESIN:          return 0x3078;
+
 		case HARDWARE_SPDIFOUT:       return 0x307A;
 		case HARDWARE_CCMODE:         return 0x307B;
 		case HARDWARE_CCROUTING:      return 0x307C;
 		case HARDWARE_STANDALONEMIDI: return 0x307D;
 		case HARDWARE_STANDALONEARC:  return 0x307E;
-
 		case HARDWARE_LOCKKEYS:       return 0x307F;
 		case HARDWARE_REMAPKEYS:      return 0x3080;
+
+		// TODO: Verify, but I am pretty sure thes are the PROGRAMKEY01-04 regs-1 (exact 4 regs between REMAPKEYS and LCDCONTRAST)
 		case HARDWARE_PROGRAMKEY01:   return 0x3081;
 		case HARDWARE_PROGRAMKEY02:   return 0x3082;
 		case HARDWARE_PROGRAMKEY03:   return 0x3083;
 		case HARDWARE_PROGRAMKEY04:   return 0x3084;
+
 		case HARDWARE_LCDCONTRAST:    return 0x3085;
 
 		case HARDWARE_OPTICALOUT:     return 0x3087;
