@@ -390,6 +390,7 @@ on_durec_delete(GtkButton *button, gpointer ptr)
 /* Forward declarations for filter functions used in apply_device */
 static gboolean output_visible(GtkTreeModel *model, GtkTreeIter *iter, gpointer ptr);
 static void output_modify(GtkTreeModel *model, GtkTreeIter *iter, GValue *val, int col, gpointer ptr);
+static void setup_channels(OSCMixWindow *self, const struct device *dev, ChannelType type, GtkBox *box);
 
 /*
  * apply_device - finalize device selection and build channel UI.
