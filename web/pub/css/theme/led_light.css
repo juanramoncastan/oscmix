@@ -182,6 +182,9 @@ fieldset select {
 	color: var(--text-highlight-color);
 }
 
+
+
+
 /* Highlight if Global Mute/Solo enabled */
 body.global-mute-enabled .toggle-button.mute-button:has(> .mute-checkbox:checked) {
 	background-color: var(--mute-highlight-color) !important;
@@ -194,7 +197,9 @@ body.global-solo-enabled .toggle-button.solo-button:has(> .solo-checkbox:checked
 }
 
 
-
+label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocket {
+	display: none;
+}
 
 .label-legend {
     font-style: italic;
@@ -210,7 +215,6 @@ body.global-solo-enabled .toggle-button.solo-button:has(> .solo-checkbox:checked
 	flex: 0 0 17em;
 	box-shadow: -4px 8px 15px rgba(0, 0, 0, 0.5);
 }
-
 
 #sidebar > details { /* > :not(:first-child)  */
 	padding: 0px;
@@ -246,6 +250,7 @@ body.global-solo-enabled .toggle-button.solo-button:has(> .solo-checkbox:checked
 
 
 
+
 #connection-icon {
 	float: right;
 	font-weight: normal;
@@ -269,13 +274,13 @@ body.global-solo-enabled .toggle-button.solo-button:has(> .solo-checkbox:checked
 	display: none;
 }*/
 
-label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocket {
-	display: none;
-}
 
 #setup label {
 	border: none;
 }
+
+
+
 
 #channels {
 	display: flex;
@@ -298,12 +303,9 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	display: none;
 }
 
-
-
 #channels > hr {
 	margin: 3px 0;
 }
-
 
 .channel-strip {
 	flex-basis: 400px;
@@ -321,8 +323,8 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	outline: 1px solid var(--border-color);
 	border-radius: 4px;
 	overflow: clip;
-	    background: #f3f3f3;
-	    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.5);
+    background: #f3f3f3;
+    box-shadow: 8px 8px 15px rgba(0, 0, 0, 0.5);
 }
 
 .channel-outer [data-flags]:not(
@@ -355,8 +357,6 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	display: flex;
 	flex-direction: column;
 	width:  var(--channel-width);
-
-
 }
 
 .channel > * {
@@ -604,6 +604,10 @@ input[type=range]:focus {
 	font-size: 0.9em;
 }
 
+
+
+
+
 .eq-plot {
 	border: 2px solid;
 	border-radius: 8px;
@@ -768,6 +772,9 @@ osc-knob::after {
 	box-shadow: 0 0 2px rgba(0,0,0,0.5);
 }
 
+
+
+
 .meter-wrapper {
 	width: 10px;
 	border: 2px solid #777777;
@@ -801,6 +808,9 @@ osc-knob::after {
 	height: 100%;
 	background-color: var(--meter-bg-color);
 }
+
+
+
 
 /* FX Styling */
 .fx-container {
@@ -949,9 +959,6 @@ osc-knob::after {
 	filter: brightness(0.95);
 }
 */
-
-
-
 
 
 
