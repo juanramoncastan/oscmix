@@ -26,7 +26,7 @@ export class Knob {
 		this.valueDisplay = document.createElement('div');
 		this.valueDisplay.className = 'knob-value';
 		this.knob.style.borderColor = this._borderColor;
-		this.valueDisplay.style.color = this._valueColor;
+		//this.valueDisplay.style.color = this._valueColor;
 
 
 		this.container.appendChild(this.knob);

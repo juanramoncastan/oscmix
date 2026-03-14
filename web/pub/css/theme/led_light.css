@@ -248,7 +248,6 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
     outline: none;
 }
 
-
 #device {
     padding: 8px;
 }
@@ -266,6 +265,7 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 
 #connection-icon[data-state="connected"]::after {
 	content: "\1F7E2";
+	
 }
 
 #connection-icon[data-state="failed"]::after {
@@ -277,10 +277,11 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 }*/
 
 
+
+
 #setup label {
 	border: none;
 }
-
 
 
 
@@ -298,7 +299,6 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 #channels > details {
 	padding: 4px;
     background-color: #f0f0f0;
-   
 }
 
 /* HACK: it seems display: flex doesn't work properly in <details> */

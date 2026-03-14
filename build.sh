@@ -14,4 +14,5 @@ cp oscmix $DEST_DIR
 
 cp ./tools/regtool ${DEST_DIR}/tools
 cp ./gtk/oscmix-gtk ${DEST_DIR}/gtk
-sudo cp -R ./web/pub/* /var/www/html/oscmix/
+sudo cp -R ./web/pub/* /var/www/html/oscmix/ \
+&& make clean

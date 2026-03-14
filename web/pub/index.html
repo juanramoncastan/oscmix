@@ -311,12 +311,6 @@
 				</summary>
 				<form id="global">
 				    <fieldset class="custom-form">
-                            <label class="form-row">Mute Enable
-						        <div class="switch">
-							        <input id="controlroom-muteenable" type="checkbox" />
-							        <span class="slider"></span>
-						        </div>
-					        </label>
 					        <label class="form-row">Solo Enable
 						        <div class="switch">
 							        <input id="main-soloenable" type="checkbox" />
@@ -333,6 +327,33 @@
 						    <label class="form-row">DSP Version<output id="hardware-dspvers"></output></label>
 				    </fieldset>
 				</form>
+			</details>
+			<hr />
+			
+            <details open>
+				<summary>Mixer View</summary>
+				<form id="view">
+				    <fieldset class="custom-form">
+					        <label class="form-row">Routing Mode
+						        <select id="routing-mode" name="routingmode">
+							        <option value="submix">Submix</option>
+							        <option value="free">Free</option>
+						        </select>
+					        </label>
+					        <label class="form-row">Level Meter FX
+						        <div class="switch">
+							        <input id="meter-fx" name="meterfx" type="checkbox" />
+							        <span class="slider"></span>
+						        </div>
+					        </label>
+					        <label class="form-row">Level Meter RMS
+						        <div class="switch">
+							        <input id="meter-rms" name="meterrms" type="checkbox" />
+							        <span class="slider"></span>
+						        </div>
+				        </label> 
+			        </fieldset>
+                </form>
 			</details>
 			<hr />
 			
@@ -410,79 +431,8 @@
 				</fieldset>
 			</details>
 			<hr />
-			
-			<details open>
-				<summary>Mixer View</summary>
-				<form id="view">
-				    <fieldset class="custom-form">
-					        <label class="form-row">Routing Mode
-						        <select id="routing-mode" name="routingmode">
-							        <option value="submix">Submix</option>
-							        <option value="free">Free</option>
-						        </select>
-					        </label>
-					        <label class="form-row">Level Meter FX
-						        <div class="switch">
-							        <input id="meter-fx" name="meterfx" type="checkbox" />
-							        <span class="slider"></span>
-						        </div>
-					        </label>
-					        <label class="form-row">Level Meter RMS
-						        <div class="switch">
-							        <input id="meter-rms" name="meterrms" type="checkbox" />
-							        <span class="slider"></span>
-						        </div>
-				        </label> 
-			        </fieldset>
-                </form>
-			</details>
-			<hr />
-
-			<details open>
-				<summary>Control Room</summary>
-				<fieldset class="custom-form">
-					<label class="form-row">Main Out
-						<select id="controlroom-mainout">
-							<option>Analog 1/2</option>
-							<option>Analog 3/4</option>
-							<option>Analog 5/6</option>
-							<option>Analog 7/8</option>
-							<option>Phones 9/10</option>
-							<option>Phones 11/12</option>
-							<option>AES L/R</option>
-							<option>ADAT 1/2</option>
-							<option>ADAT 3/4</option>
-							<option>ADAT 5/6</option>
-							<option>ADAT 7/8</option>
-							<option>ADAT 9/10</option>
-							<option>ADAT 11/12</option>
-							<option>ADAT 13/14</option>
-							<option>ADAT 15/16</option>
-						</select>
-					</label>
-					<label class="form-row">Main Mono
-						<div class="switch">
-							<input id="controlroom-mainmono" type="checkbox" />
-							<span class="slider"></span>
-						</div>
-					</label>
-					<label class="form-row">Dim Reduction
-						<input id="controlroom-dimreduction" type="number" min="-65" max="0" step="0.1" value="-20" />
-					</label>
-					<label class="form-row">Dim
-						<div class="switch">
-							<input id="controlroom-dim" type="checkbox" />
-							<span class="slider"></span>
-						</div>
-					</label>
-					<label class="form-row">Recall Volume
-						<input id="controlroom-recallvolume" type="number" min="-65" max="0" step="0.1" value="-10" />
-					</label>
-				</fieldset>
-			</details>
-			<hr />
-			
-			<details>
+            
+            <details>
 				<summary>DURec</summary>
 				<fieldset class="custom-form">
 					<label class="form-row">File:
@@ -505,19 +455,59 @@
 			<hr />
 			
 			<details open>
-				<summary>Hardware</summary>
+				<summary>Control Room</summary>
 				<fieldset class="custom-form">
-					<label class="form-row">LCD Contrast
-						<input
-						type="range"
-						id="hardware-lcdcontrast"
-						orient="horizontal"
-						min="-20"
-						max="20"
-						step="1"
-						value="0" />
+					<label class="form-row">Main Out
+						<select id="controlroom-mainout">
+							<option>Analog 1/2</option>
+							<option>Analog 3/4</option>
+							<option>Analog 5/6</option>
+							<option>Analog 7/8</option>
+							<option>Phones 9/10</option>
+							<option>Phones 11/12</option>
+							<option>AES L/R</option>
+							<option>ADAT 1/2</option>
+							<option>ADAT 3/4</option>
+							<option>ADAT 5/6</option>
+							<option>ADAT 7/8</option>
+							<option>ADAT 9/10</option>
+							<option>ADAT 11/12</option>
+							<option>ADAT 13/14</option>
+							<option>ADAT 15/16</option>
+						</select>
 					</label>
-					<label class="form-row">Clock Source
+                    <label class="form-row">Mute Enable
+				        <div class="switch">
+					        <input id="controlroom-muteenable" type="checkbox" />
+					        <span class="slider"></span>
+				        </div>
+			        </label>
+					<label class="form-row">Main Mono
+						<div class="switch">
+							<input id="controlroom-mainmono" type="checkbox" />
+							<span class="slider"></span>
+						</div>
+					</label>
+					<label class="form-row">Dim Reduction
+						<input id="controlroom-dimreduction" type="number" min="-65" max="0" step="0.1" value="-20" />
+					</label>
+					<label class="form-row">Dim
+						<div class="switch">
+							<input id="controlroom-dim" type="checkbox" />
+							<span class="slider"></span>
+						</div>
+					</label>
+					<label class="form-row">Recall Volume
+						<input id="controlroom-recallvolume" type="number" min="-65" max="0" step="0.1" value="-10" />
+					</label>
+				</fieldset>
+			</details>
+			<hr />
+
+            <details open>
+				<summary>Clock</summary>
+			    <fieldset class="custom-form">
+                    <label class="form-row">Clock Source
 						<select id="clock-source">
 							<option>Internal</option>
 							<option>Word Clock</option>
@@ -546,6 +536,23 @@
 							<input id="clock-wckterm" type="checkbox" />
 							<span class="slider"></span>
 						</div>
+					</label>
+				</fieldset>
+			</details>
+            <hr />
+            
+			<details open>
+				<summary>Hardware</summary>
+				<fieldset class="custom-form">
+					<label class="form-row">LCD Contrast
+						<input
+						type="range"
+						id="hardware-lcdcontrast"
+						orient="horizontal"
+						min="-20"
+						max="20"
+						step="1"
+						value="0" />
 					</label>
 					<label class="form-row">AES In
 						<select id="hardware-aesin">
