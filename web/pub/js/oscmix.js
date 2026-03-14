@@ -1672,7 +1672,7 @@ function applyDeviceFeatures() {
 
     const deviceName = currentDevice.deviceName;
     const deviceNameLabel = document.getElementById("device-name");
-    deviceNameLabel.textContent = deviceName;
+    if (deviceNameLabel) deviceNameLabel.textContent = deviceName;
 
 	// DURec section
 	const durecSection = document.querySelector('details:has(#durec-file)');
