@@ -249,7 +249,9 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 }
 
 
-
+#device {
+    padding: 8px;
+}
 
 #connection-icon {
 	float: right;

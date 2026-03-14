@@ -1670,6 +1670,10 @@ function applyDeviceFeatures() {
 	const hasHwKeys = currentDevice?.hasHwKeys ?? true;
 	const hasHwLcd  = currentDevice?.hasHwLcd  ?? true;
 
+    const deviceName = currentDevice.deviceName;
+    const deviceNameLabel = document.getElementById("device-name");
+    deviceNameLabel.textContent = deviceName;
+
 	// DURec section
 	const durecSection = document.querySelector('details:has(#durec-file)');
 	if (durecSection) {
