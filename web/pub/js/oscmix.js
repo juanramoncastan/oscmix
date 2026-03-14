@@ -10,7 +10,7 @@ import { device_ffufxii } from "./device_ffufxii.js";
 import { RoomEQBridge, withValueCache } from './roomEq_oscbridge.js';
 
 const devices = [device_ff802, device_ffucxii, device_ffufxiii, device_ffucx, device_ffufxp, device_ffufxii];
-let currentDevice = device_ffufxiii;
+let currentDevice = device_ffufxii;
 
 let arcControlWindow = null;
 
