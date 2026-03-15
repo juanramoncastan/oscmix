@@ -303,6 +303,9 @@ class Interface {
 		this.methods = new Map();
 		this.durecFiles = [];
 		this.currentFile = -1;
+        this.collapseAllButton = document.querySelector('#collapse-all');
+        this.expandAllButton = document.querySelector('#expand-all');
+        this.addCollapseAllEvent();
 
 		for (let i = 0; i < currentDevice.outputNames.length; i++) {
 			this.methods.set(`/output/${i + 1}/volumecal`, (args) => {
@@ -311,6 +314,16 @@ class Interface {
 		}
 	}
 
+    collapseAll(expand) {
+        const elementos = document.querySelectorAll('#sidebar > details');
+        elementos.forEach(element => { element.open = expand; });
+    }
+
+    addCollapseAllEvent() {
+        this.collapseAllButton.addEventListener('click', () => { this.collapseAll(false); });
+        this.expandAllButton.addEventListener('click', () => { this.collapseAll(true); });
+    }
+      
 	initDurec() {
 		const formatTime = (seconds) => {
 			const hrs = Math.floor(seconds / 3600);
