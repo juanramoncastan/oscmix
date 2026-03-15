@@ -15,6 +15,12 @@ export const device_ffufxii = {
 	hasRoomEq: true,
 	hasHwKeys: true,
 	hasHwLcd:  true,
+	hasOptIn: false,
+	hasOptOut: true,
+	hasOptIn2: false,
+	hasOptOut2: true,
+	hasMadiIn: false,
+	hasMadiOut: false,
 
 	inputs: [
 		{ name: 'Analog 1', flags: ['gain', 'reflevel'], gain: { min: 0, max: 12 }, reflevel: RL_INPUT },

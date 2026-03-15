@@ -1668,11 +1668,14 @@ function applyDeviceFeatures() {
 	// directly in the Channel constructor while IDs are still present.
 	const hasDurec  = currentDevice?.hasDurec  ?? false;
 	const hasHwKeys = currentDevice?.hasHwKeys ?? true;
-	const hasHwLcd  = currentDevice?.hasHwLcd  ?? true;
-
-    const deviceName = currentDevice.deviceName;
-    const deviceNameLabel = document.getElementById("device-name");
-    if (deviceNameLabel) deviceNameLabel.textContent = deviceName;
+	const deviceName = currentDevice?.deviceName ?? "?";
+	const hasHwLcd = currentDevice?.hasHwLcd ?? true;
+	const hasOptIn = currentDevice?.hasOptIn ?? true;
+	const hasOptOut = currentDevice?.hasOptOut ?? true;
+	const hasOptIn2 = currentDevice?.hasOptIn2 ?? true;
+	const hasOptOut2 = currentDevice?.hasOptOut2 ?? true;
+	const hasMadiIn = currentDevice?.hasMadiIn ?? true;
+	const hasMadiOut = currentDevice?.hasMadiOut ?? true;
 
 	// DURec section
 	const durecSection = document.querySelector('details:has(#durec-file)');
@@ -1690,9 +1693,29 @@ function applyDeviceFeatures() {
 		if (hr?.tagName === 'HR') hr.hidden = !hasHwKeys;
 	}
 
-	// LCD Contrast label
-	const lcdLabel = document.querySelector('label:has(#hardware-lcdcontrast)');
-	if (lcdLabel) lcdLabel.hidden = !hasHwLcd;
+    const deviceNameLabel = document.getElementById("device-name");
+    if (deviceNameLabel) deviceNameLabel.textContent = deviceName;
+
+    const lcdLabel = document.querySelector('label:has(#hardware-lcdcontrast)');
+    if (lcdLabel) lcdLabel.hidden = !hasHwLcd;
+    
+    const optinLabel = document.querySelector('label:has(#hardware-opticalin)');
+    if (optinLabel) optinLabel.hidden = !hasOptIn;
+
+    const optoutLabel = document.querySelector('*:has(> #hardware-opticalout)');
+    if (optoutLabel) optoutLabel.hidden = !hasOptOut;
+    
+    const optin2Label = document.querySelector('label:has(#hardware-opticalin2)');
+    if (optin2Label) optin2Label.hidden = !hasOptIn2;
+
+    const optout2Label = document.querySelector('label:has(#hardware-opticalout2)');
+    if (optout2Label) optout2Label.hidden = !hasOptOut2;
+
+    const madiinLabel = document.querySelector('label:has(#hardware-madiinput)');
+    if (madiinLabel) madiinLabel.hidden = !hasMadiIn;
+    
+    const madioutLabel = document.querySelector('label:has(#hardware-madioutput)');
+    if (madioutLabel) madioutLabel.hidden = !hasMadiOut;
 }
 
 function populateDeviceSpecificOptions() {

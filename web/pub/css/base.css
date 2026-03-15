@@ -67,6 +67,28 @@ input:checked + .slider::before {
 	transform: translateX(18px);
 }
 
+/* - DSP Load meter ------------------------------------------------------- */
+.dsp-load-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	width: 50%;
+}
+
+.dsp-load-wrapper meter {
+	flex: 1 1 0;
+	min-width: 0;
+	height: 1.2em;
+	display: block;
+}
+
+.dsp-load-wrapper output {
+	flex-shrink: 0;
+	width: 50%;
+	min-width: 1.5em;
+	text-align: right;
+}
+
 /* - Form layout ---------------------------------------------------------- */
 .custom-form {
 	outline: none; /*2px solid #aaa;*/
@@ -121,6 +143,21 @@ input:checked + .slider::before {
     display: flex;
 	width: 50%;
 	justify-content: center;
+}
+
+.form-row input[type="text"],
+.form-row input:not([type]) {
+	border: 1px solid var(--border-color);
+	border-radius: 2px;
+	min-height: 1.2em;
+	width: 50%;
+	box-sizing: border-box;
+}
+
+/* - DURec button active state -------------------------------------------- */
+button[aria-pressed="true"] {
+	outline: 2px solid currentColor;
+	font-weight: bold;
 }
 
 .form-row input[type="text"],
