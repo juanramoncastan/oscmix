@@ -216,9 +216,15 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-#sidebar > details { /* > :not(:first-child)  */
-	padding: 0px;
+#sidebar > details {
+    border: 2px solid #cccccc;
+    border-radius: 8px;
+    padding: 4px;
+    margin: 4px;
+}
 
+#sidebar > details > :not(:first-child) {
+	padding: 0px;
 }
 
 #sidebar summary {
@@ -231,21 +237,8 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	margin: 4px;
 }
 
-#sidebar > details {
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    padding: 4px;
-    margin: 4px;
-}
-
 #sidebar hr {
-    height: 0px;
-    padding: 0px;
-    margin: 0px;
-    background: #000;
-    background-color: #000; 
-    border: none;
-    outline: none;
+    display: none;
 }
 
 #device {
@@ -278,7 +271,7 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 
 
 
-
+/* Remove border in setup form labels */
 #setup label {
 	border: none;
 }
@@ -307,7 +300,9 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 }
 
 #channels > hr {
-	margin: 3px 0;
+    display: none;
+	margin: 2px 0;
+	color: #cccccc;
 }
 
 .channel-strip {
