@@ -276,8 +276,13 @@
 		        <div>
 		            <fieldset class="custom-form">
                         <label class="form-row">Device: <output style="font-weight: bold;" id="device-name"></output></label>
-                        <label class="form-row">DSP Load <output id="hardware-dspload"></output>%</label>
-					    <label class="form-row">DSP Version<output id="hardware-dspvers"></output></label>
+                        <label class="form-row">DSP Load
+							<span class="dsp-load-wrapper">
+								<meter id="hardware-dspload-meter" min="0" max="100" low="70" high="90" optimum="0"></meter>
+								<!--<output id="hardware-dspload"></output>-->
+							</span>
+						</label>
+						<label class="form-row">DSP Version<output id="hardware-dspvers"></output></label>
                     </fieldset>
                 <div>
                 </div>

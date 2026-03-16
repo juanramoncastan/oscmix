@@ -15,6 +15,7 @@ export const device_ffufxii = {
 	hasRoomEq: true,
 	hasHwKeys: true,
 	hasHwLcd:  true,
+	hasWcOut:  false,
 	hasOptIn: false,
 	hasOptOut: true,
 	hasOptIn2: false,

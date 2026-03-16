@@ -219,10 +219,11 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 
 #sidebar > #device {
     background-color: var(--background-sidebar-color);
-    border: 2px solid #cccccc;
-    border-radius: 8px;
-    padding: 0px 4px 0px 4px;
-    margin: 4px;
+    /*border: 2px solid #cccccc;*/
+    /*border-radius: 8px;*/
+    padding: 0px 4px 4px 4px;
+    /*margin: 4px;*/
+    margin-bottom: 10px;
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.5);
     position: sticky;
     top: 0;
@@ -254,6 +255,15 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 
 #sidebar hr {
     display: none;
+}
+
+
+#sidebar label {
+  pointer-events: none;
+}
+
+#sidebar label > * {
+  pointer-events: auto !important;
 }
 
 
@@ -753,19 +763,19 @@ osc-knob::after {
 	overflow: hidden;
 	margin: 2px 4px;
 	background: repeating-linear-gradient(to top,
-       #444a 0px,
-       #444a 1px,      /* Grosor de la separación negra */
+       #444 0px,
+       #444 1px,  
        transparent 1px,
-       transparent 5px /* Tamaño del LED (total 6px de paso) */
+       transparent 8px 
     ),
     linear-gradient(to top,
 	    var(--meter-green) 0%,
-	    var(--meter-green) 63%,
-	    var(--meter-yellow) 65%,
+	    var(--meter-green) 62%,
+	    var(--meter-yellow) 64%,
 	    var(--meter-yellow) 77%,
-	    var(--meter-orange) 80%,	    
+	    var(--meter-orange) 79%,	    
 	    var(--meter-orange) 87%,	    
-	    var(--meter-red) 90%,
+	    var(--meter-red) 87%,
 	    var(--meter-red) 100%
 	);
 	position: relative;
