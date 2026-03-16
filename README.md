@@ -1,12 +1,12 @@
 [![Build and Release](https://github.com/huddx01/oscmix/actions/workflows/build.yml/badge.svg?branch=dev)](https://github.com/huddx01/oscmix/actions/workflows/build.yml)
 
-⚠️ Note
+Hi, you have reached my dev branch which is a fork of https://github.com/michaelforney/oscmix.
 
-You have reached my dev branch which is a fork of https://github.com/michaelforney/oscmix.
+> [!NOTE]
+> My branch is NOT sponsored, authorized, endorsed, or associated with RME Audio in any way. This is an independent implementation created for educational purposes and to provide Linux (and macOS) support for the RME hardware.
 
-Keep in mind that this content may be untested/experimental/wip state.
-
-
+> [!WARNING]
+> Keep in mind that this content may be untested/experimental/wip state.
 # oscmix
  
 oscmix implements an OSC API for some RME's Fireface units running in
@@ -203,7 +203,9 @@ For example, if your unit would appear like this...
 ```sh
 ./coremidiio -f 6,7 -p 4 ./oscmix -p 'Fireface 802 (12345678) Port 2'
 ```
-Note: you can also set MIDIPORT env variable to 'Fireface 802 (12345678) Port 2' in this example.
+
+> [!NOTE]
+> You can also set MIDIPORT env variable to 'Fireface 802 (12345678) Port 2' in this example.
 
 
 ## GTK UI
@@ -223,23 +225,24 @@ GSETTINGS_SCHEMA_DIR=$PWD/gtk ./gtk/oscmix-gtk
 
 ## Qt UI *(Early WIP)*
 
-> **Note:** This is a first rough draft after only a few hours of learning Qt —
+> [!NOTE]
+> This is a first rough draft after only a few hours of learning Qt -
 > expect rough edges. Sources and binaries will follow once it's in a shareable state.
 
 <img width="1261" height="874" alt="qt-preview" src="doc/qt-preview.png" />
 
 ### Why Qt?
 
-- **Native macOS experience** — proper window chrome, system fonts, and trackpad scrolling that GTK can't match on macOS
-- **TotalMixFX-familiar layout** — channel strips, faders, and Room EQ dialog modelled closely after RME's own UI, so there's virtually no learning curve for existing TotalMixFX users
-- **Richer per-output EQ visualization** — interactive EQ plot with draggable band handles, already ahead of the GTK and Web UIs in this regard
+- **Native experience** - proper window chrome, system fonts, and trackpad scrolling that GTK can't match on Linux and macOS
+- **Universal Code** - no change of one single code line needed for building on each system (Linux/macOS/Windows). While the UI exacly looks the same on all. 
+- **Open GL/Metal** - Qt supports direct graphics engine support for all systems, without further hassles...
 
 ### Your input wanted
 
 This frontend is at the stage where your feedback shapes the direction. Two things are especially useful right now:
 
-1. **What matters to you in the UI?** Missing controls, layout preferences, workflow details — just open an issue.
-2. **GTK vs. Qt priority?** Development time is finite. If you actively use or plan to use the Qt frontend, let me know via issue — it directly influences where time goes.
+1. **What matters to you in the UI?** Missing controls, layout preferences, workflow details - just open an issue.
+2. **GTK vs. Qt priority?** Development time is finite. If you actively use or plan to use the Qt frontend, let me know via issue - it directly influences where time goes.
 
 ## Web UI
 
