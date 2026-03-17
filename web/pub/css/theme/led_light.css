@@ -266,6 +266,7 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
     -ms-user-select: none;
     user-select: none; 
 }
+
 #sidebar label {
     pointer-events: none; 
 }

@@ -320,7 +320,7 @@ class Interface {
 	}
 
     collapseAll(expand) {
-        const elementos = document.querySelectorAll('#sidebar > details');
+        const elementos = document.querySelectorAll('#sidebar > details:not(.not-hide)');
         elementos.forEach(element => { element.open = expand; });
     }
 
@@ -1556,11 +1556,11 @@ function setupInterface() {
 	iface.bind("/hardware/dspvers", ",i", document.getElementById("hardware-dspvers"), "textContent");
 	{
 		const dspMeter = document.getElementById("hardware-dspload-meter");
-		const dspValue = document.getElementById('hardware-dspload'); /* A label with te value */
+		//const dspValue = document.getElementById('hardware-dspload'); /* A label with te value */
 		iface.methods.set("/hardware/dspload", (args) => {
 			dspMeter.value = args[0];
 			dspMeter.title = args[0] + " %";
-			dspValue.textContent = "DSP Load: " + args[0] + " %"; /* Value in the label */
+			//dspValue.textContent = "DSP Load: " + args[0] + " %"; /* Value in the label */
 		});
 	}
 

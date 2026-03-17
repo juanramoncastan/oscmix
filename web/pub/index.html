@@ -272,31 +272,51 @@
 		<!-- Sidebar -->
 		
 		<div id="sidebar">
-		    <form id="device">
-		        <div>
-		            <fieldset class="custom-form">
-                        <label class="form-row">Device: <output id="device-name"></output></label>
-                        <label  class="form-row">
-                            <span  id="hardware-dspload">DSP Load: </span>
-							<span class="dsp-load-wrapper">
-								<meter id="hardware-dspload-meter" min="0" max="100" low="70" high="90" optimum="0"></meter>
-								<!--<output id="hardware-dspload"></output>-->
-							</span>
-						</label>
-						<label class="form-row">DSP Version<output id="hardware-dspvers"></output></label>
-                    </fieldset>
-                <div>
-                </div>
-                    <fieldset>
-				        <input type="button" id="expand-all" value="Expand All" />
-				        <input type="button" id="collapse-all" value="Collapse All" />
-                    </fieldset>
-                </div>
-            </form>
+		    <details  open class="not-hide" >
+                <summary>
+					Global
+				</summary>
+		        <form id="device">
+		            <div>
+		                <fieldset class="custom-form">
+                            <label class="form-row">Device: <output id="device-name"></output></label>
+                            <label  class="form-row">
+                                <span  id="hardware-dspload">DSP Load</span>
+							    <span class="dsp-load-wrapper">
+								    <meter id="hardware-dspload-meter" min="0" max="100" low="70" high="90" optimum="0"></meter>
+								    <!--<output id="hardware-dspload"></output>-->
+							    </span>
+						    </label>
+						    <label class="form-row">DSP Version<output id="hardware-dspvers"></output></label>
+                            <label class="form-row">Solo Enable
+						        <div class="switch">
+							        <input id="main-soloenable" type="checkbox" />
+							        <span class="slider"></span>
+						        </div>
+					        </label>
+					        <label class="form-row">Fader Adhoc Enable
+						        <div class="switch">
+							        <input id="main-adhocfaderenable" type="checkbox" />
+							        <span class="slider"></span>
+						        </div>
+					        </label>
+                        </fieldset>
+                    </div>
+                    <div>
+                        <fieldset>
+				            <input type="button" id="expand-all" value="Expand All" />
+				            <input type="button" id="collapse-all" value="Collapse All" />
+                        </fieldset>
+                    </div>
+                </form>
+            </details>
             <hr />
             
 			<details open>
-				<summary>Connection<span id="connection-icon"></span></summary>
+				<summary>
+				    Connection
+				    <span id="connection-icon"></span>
+				</summary>
 				<form id="connection">
 					<fieldset class="custom-form">
 						<label class="form-row">Type
@@ -324,30 +344,7 @@
 				</form>
 			</details>
 			<hr />
-			
-			<details open>
-				<summary>
-					Main
-				</summary>
-				<form id="global">
-				    <fieldset class="custom-form">
-					        <label class="form-row">Solo Enable
-						        <div class="switch">
-							        <input id="main-soloenable" type="checkbox" />
-							        <span class="slider"></span>
-						        </div>
-					        </label>
-					        <label class="form-row">Fader Adhoc Enable
-						        <div class="switch">
-							        <input id="main-adhocfaderenable" type="checkbox" />
-							        <span class="slider"></span>
-						        </div>
-					        </label>
-				    </fieldset>
-				</form>
-			</details>
-			<hr />
-			
+
             <details open>
 				<summary>Mixer View</summary>
 				<form id="view">
