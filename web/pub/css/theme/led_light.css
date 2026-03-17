@@ -253,19 +253,30 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	padding: 4px;
 }
 
+#sidebar fieldset {
+	width: 
+}
+
 #sidebar hr {
     display: none;
 }
 
-
+#sidebar * {
+    -webkit-user-select: none; 
+    -ms-user-select: none;
+    user-select: none; 
+}
 #sidebar label {
-  pointer-events: none;
+    pointer-events: none; 
 }
 
 #sidebar label > * {
   pointer-events: auto !important;
 }
 
+#device-name {
+	font-weight: bold;
+}
 
 #connection-icon {
 	float: right;

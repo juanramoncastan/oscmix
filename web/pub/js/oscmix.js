@@ -1556,9 +1556,11 @@ function setupInterface() {
 	iface.bind("/hardware/dspvers", ",i", document.getElementById("hardware-dspvers"), "textContent");
 	{
 		const dspMeter = document.getElementById("hardware-dspload-meter");
+		const dspValue = document.getElementById('hardware-dspload'); /* A label with te value */
 		iface.methods.set("/hardware/dspload", (args) => {
 			dspMeter.value = args[0];
 			dspMeter.title = args[0] + " %";
+			dspValue.textContent = "DSP Load: " + args[0] + " %"; /* Value in the label */
 		});
 	}
 
