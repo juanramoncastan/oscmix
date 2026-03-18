@@ -16,7 +16,7 @@
 	/* Base Toggle-Button colors */
 	--toggle-hover-color: #dadbdc;
 	--toggle-active-color: #f8f8f8;
-	--toggle-checked-color: #ccc;
+	--toggle-checked-color: #444444;
 
 	/* Mute, Solo & AdHoc Fader colors */
 	--mute-color: #4a86e8;
@@ -65,6 +65,8 @@
 	--switch-off-color: #ccc;
 	--switch-on-color: #5555DD;
 	--switch-thumb-color: white;
+	
+	
 }
 
 * {
@@ -101,10 +103,12 @@ fieldset {
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	border: 0;
 	padding: 0;
+	min-width: 0;
 }
 
 fieldset > label {
 	display: contents;
+	align-items: center;
 }
 
 fieldset span:has(input[type="checkbox"]) {
@@ -140,7 +144,7 @@ fieldset select {
 
 .toggle-button:has(> input[type="checkbox"]:checked) {
 	background-color: var(--toggle-checked-color);
-	color: var(--background-color);
+	color: white; /*var(--background-color);*/
 }
 
 /* Mute & Solo Buttons */
@@ -217,21 +221,6 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 }
 
 
-#sidebar > #device {
-    background-color: var(--background-sidebar-color);
-    /*border: 2px solid #cccccc;*/
-    /*border-radius: 8px;*/
-    padding: 0px 4px 4px 4px;
-    /*margin: 4px;*/
-    margin-bottom: 10px;
-    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.5);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    
-}
-
-
 #sidebar > details {
     border: 2px solid #cccccc;
     border-radius: 8px;
@@ -244,6 +233,22 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	padding: 0px;
 }
 
+#sidebar > #device {
+    background-color: var(--background-sidebar-color);
+    border-radius: 0px;
+    /*border: 2px solid #cccccc;*/
+    /*border-radius: 8px;*/
+    padding: 4px 4px 4px 4px;
+    margin: 0px;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+
+
 #sidebar summary {
     padding: 0px 4px 0px 4px;
 }
@@ -251,10 +256,6 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 #sidebar fieldset {
 	row-gap: 4px;
 	padding: 4px;
-}
-
-#sidebar fieldset {
-	width: 
 }
 
 #sidebar hr {
@@ -342,6 +343,15 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	margin: 2px;
 	color: #cccccc;
 }
+
+
+#channels * {
+    -webkit-user-select: none; 
+    -ms-user-select: none;
+    user-select: none; 
+
+}
+
 
 .channel-strip {
 	flex-basis: 400px;
@@ -611,13 +621,14 @@ input[type=range]:focus {
 	border-bottom-left-radius: 4px;
 }
 
+
 .channel:has(~ .channel-panel-eq :is(.eq, .lowcut):checked) .channel-show-eq-label,
 .channel:has(~ .channel-panel-dynamics :is(.dynamics, .autolevel):checked) .channel-show-dynamics-label {
 	box-shadow: inset 0 0 0.5em selecteditem;
 }
 
 .channel-panel-settings:has(.stereo:not(:checked)) .stereo-field {
-		width: 0;
+	width: 0;
 	padding: 0;
 	border-left-width: 0;
 	overflow: hidden;
@@ -637,10 +648,29 @@ input[type=range]:focus {
 	box-sizing: border-box;   
 }
 
+
+
 .channel-panel fieldset {
-	font-size: 0.9em;
+	font-size: 1em;
+	row-gap: 4px;
 }
 
+
+
+.fx-control {
+    display: block !important;
+	align-items: top;
+    grid-column: 1 / -1 !important; /* Fa que comenci a la columna 1 i acabi al final */
+    width: 100%;
+}
+
+.fx-slider {
+	height: 20px;
+    width: 100%;
+	display: block;
+	-webkit-appearance: slider-horizontal;
+	writing-mode: horizontal-lr;
+}
 
 
 
@@ -718,18 +748,6 @@ input[type=range]:focus {
 	margin: 0.5rem 0;
 }
 
-.fx-control {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.fx-slider {
-	height: 80px;
-	width: 20px;
-	-webkit-appearance: slider-vertical;
-	writing-mode: bt-lr;
-}
 
 
 

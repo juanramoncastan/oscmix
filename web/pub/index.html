@@ -114,19 +114,22 @@
 						<!--							<label data-flags="fx">FX-->
 						<!--								<div class="knob-target"></div>-->
 						<!--							</label>-->
-						<label>FX
-							<div class="fx-control">
-								<input
-								type="range"
-								class="fx-slider"
-								orient="vertical"
-								min="-65"
-								max="0"
-								step="0.5"
-								value="-65" />
-								<input type="number" id="fx" min="-65" max="0" step="0.5" value="-65" />
-							</div>
+
+						<label>
+                            Fx
+                            <input type="number" id="fx" min="-65" max="0" step="0.5" value="-65" />
 						</label>
+                        <label class="fx-control">
+				            <input
+							type="range"
+							class="fx-slider"
+							min="-65"
+							max="0"
+							step="0.5"
+							value="-65"
+							/>
+						</label>
+
 						<!--						<label id="fx">-->
 						<!--							<div class="knob-target"></div>-->
 						<!--						</label>-->
@@ -272,11 +275,11 @@
 		<!-- Sidebar -->
 		
 		<div id="sidebar">
-		    <details  open class="not-hide" >
+		    <details  open class="not-hide" id="device">
                 <summary>
 					Global
 				</summary>
-		        <form id="device">
+		        <form>
 		            <div>
 		                <fieldset class="custom-form">
                             <label class="form-row">Device: <output id="device-name"></output></label>

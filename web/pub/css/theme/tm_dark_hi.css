@@ -623,19 +623,27 @@ input[type=range]:focus {
 	margin: 0.5rem 0;
 }
 
+
+.channel-panel fieldset {
+	font-size: 1em;
+	row-gap: 4px;
+}
+
 .fx-control {
-	display: flex;
-	align-items: center;
-	gap: 8px;
+    display: block !important;
+	align-items: top;
+    grid-column: 1 / -1 !important; /* Fa que comenci a la columna 1 i acabi al final */
+    width: 100%;
 }
 
 .fx-slider {
-	height: 80px;
-	width: 20px;
-	-webkit-appearance: slider-vertical;
-	appearance: vertical;
-	writing-mode: bt-lr;
+	height: 20px;
+    width: 100%;
+	display: block;
+	-webkit-appearance: slider-horizontal;
+	writing-mode: horizontal-lr;
 }
+
 
 /* Knob Styling */
 .knob-container {

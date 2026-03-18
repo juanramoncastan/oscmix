@@ -1484,7 +1484,7 @@ function setupInterface() {
 	iface.bind("/hardware/opticalout2", ",i", document.getElementById("hardware-opticalout2"), "selectedIndex", "change");
 	iface.bind("/hardware/spdifout", ",i", document.getElementById("hardware-spdifout"), "selectedIndex", "change");
 	iface.bind("/hardware/ccmix", ",i", document.getElementById("hardware-ccmix"), "selectedIndex", "change");
-	iface.bind("/hardware/ccmode", ",i", document.getElementById("hardware-ccmode"), "checked", "change");
+	iface.bind("/hardware/ccmode", ",i", document.getElementById("hardware-ccmode"), "selectedIndex", "change");
 	iface.bind(
 		"/hardware/interfacemode",
 		",i",
