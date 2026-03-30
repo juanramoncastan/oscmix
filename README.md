@@ -226,17 +226,14 @@ GSETTINGS_SCHEMA_DIR=$PWD/gtk ./gtk/oscmix-gtk
 ## Qt UI *(Early WIP)*
 
 > [!NOTE]
-> This is a first rough draft after only a few hours of learning Qt -
-> expect rough edges. Sources and binaries will follow once it's in a shareable state.
+> This is a first rough draft after only a few days of learning Qt - expect rough edges.
+> Sources will follow once it's in a shareable state.
+> 
+> NEW: A pre-built binary (for first try-out) is available in the [Releases](https://github.com/huddx01/oscmix/releases)
+> 
+> For a current feature description see the [oscmix Qt UI wiki page](https://github.com/huddx01/oscmix/wiki/oscmixQt)
 
 <img width="1261" height="874" alt="qt-preview" src="doc/qt-preview.png" />
-
-Latest changes: 
-- Big steps forwards today...
-- Level meters finetuning
-- Editable channel names
-- And a lot under the hood...
-- yeah, needs polish regarding colors/positioning/scaling etc...
 
 ### Why Qt?
 
