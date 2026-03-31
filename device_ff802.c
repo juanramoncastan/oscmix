@@ -79,7 +79,7 @@ static enum control regtoctl(int reg, struct param *p) {
 				return -1;
 			}
 			p->out = mix_number;
-			p->in = 14 + ((reg & 0x1F) >> 1);
+			p->in = 0 + ((reg & 0x1F) >> 1);
 			if (p->out >= LEN(outputs) || p->in >= LEN(inputs)) {
 				return -1;
 			}
