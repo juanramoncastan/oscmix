@@ -221,6 +221,19 @@ label:has(#connection-type:not([data-value="WebSocket"])) ~ .connection-websocke
 	box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.5);
 }
 
+/*
+#sidebar > details[open] > *:not(summary) {
+    overflow: hidden;
+    max-height: 0;
+}
+
+#sidebar >details[open]:focus-within > *:not(summary),
+#sidebar >details[open]:active > *:not(summary) {
+  max-height: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+*/
 
 #sidebar > details {
     border: 2px solid #cccccc;
@@ -846,10 +859,10 @@ osc-knob::after {
 	overflow: hidden;
 	margin: 2px 4px;
 	background: repeating-linear-gradient(to top,
-       #444 0px,
-       #444 1px,  
+       #0005 0px,
+       #0005 1px,  
        transparent 1px,
-       transparent 8px 
+       transparent 4px 
     ),
     linear-gradient(to top,
 	    var(--meter-green) 0%,
